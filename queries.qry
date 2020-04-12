@@ -1,0 +1,14 @@
+query selectJamones {
+  description: "Nos devuelve todos los jamones"
+  statement: 
+    SELECT org.jamon.Jamon
+}
+
+query selectJamonByBrida {
+  description: "Nos devuelve todos los jamones de una brida especifica"
+  statement: 
+    SELECT org.jamon.Jamon
+    WHERE (estatus_brida == _$estatus_brida)
+}
+
+

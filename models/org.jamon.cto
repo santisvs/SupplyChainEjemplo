@@ -1,0 +1,83 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ * Modelo para cadena de suministros
+ */
+
+namespace org.jamon
+
+enum ColorBridaJamon {
+  o NEGRA
+  o ROJA
+  o VERDE
+  o BLANCA
+}
+
+enum Divisa {
+  o EURO
+  o DOLAR
+}
+
+concept Direccion {
+  o String lineaDireccion1
+  o String lineaDireccion2
+  o String localidad
+  o String codigoPostal regex=/0[1-9][0-9]{3}|[1-4][0-9]{4}|5[0-2][0-9]{3}/
+}
+
+concept Dinero {
+  o String cantidad
+  o Divisa divisa
+}
+
+abstract participant Individuo identified by id {
+  o String id
+  o String nombre
+  o String email regex=/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+  o Direccion direccion
+  o Dinero contabilidad
+}
+
+participant Ganadero extends Individuo {
+  o String numeroLicencia
+}
+
+participant PropietarioRestaurante extends Individuo {
+  o String nombreRestaurante
+}
+
+asset Jamon identified by jamonId {
+  o String jamonId
+  o Dinero precio
+  o Integer peso range=[2, 10]
+  o ColorBridaJamon estatus_brida default="BLANCA"
+  o DateTime tiempoCuracion
+  --> Individuo propietario
+}
+
+transaction VenderJamon {
+  --> Jamon jamon
+  --> Ganadero ganadero
+  --> PropietarioRestaurante propietarioRestaurante
+}
+
+event VentaDeJamonNotificacion {
+  o String jamonId
+  o Dinero precio
+  o String nombreRestaurante
+  o Dinero contabilidadRestaurante
+  o String numeroLicenciaGanadero
+  o Dinero contabilidadGanadero
+}
